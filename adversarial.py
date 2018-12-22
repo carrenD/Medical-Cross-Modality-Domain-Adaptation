@@ -995,17 +995,7 @@ class Trainer(object):
         summary_writer.flush()
 
     def test_eval(self, sess, output_path, flip_correction = True):
-        """
-        Params:
-        ctr_bias, if image is 512*512 in x-y, samples are 256 * 256 with the same center, then ctr_bias = (512 - 256) / 2
-        flip_correction: due to the npz format sometimes the samples need to be flipped
-        """
-        # confustion matrix!
-        # Note, this is a tricky part of tensorflow batch norm and no one knows
-        # why for sure. Recall that we have 130 frames for each volume. Deleting
-        # starting and end we have 128 slices which means we can devide them to
-        # 16 * 16 batches, and feed them seperately, self.net.batch_size = 16
-        #
+
         all_cm = np.zeros([self.num_cls, self.num_cls])
 
         pred_folder = os.path.join(output_path, "dense_pred")
@@ -1063,7 +1053,6 @@ class Trainer(object):
 
         np.savetxt(os.path.join(output_path, "cm.csv"), all_cm)
 
-        # return my_dice, my_jaccard
         return subject_dice_list, subject_jaccard_list
 
     def sample_metric_stddev(self, sample_eval_list):
