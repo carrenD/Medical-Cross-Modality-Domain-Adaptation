@@ -9,9 +9,6 @@ from collections import OrderedDict
 import __future__
 import logging
 import matplotlib
-import tensorflow as tf
-import pymedimage.visualize as viz
-import pymedimage.niftiio as nio
 from tensorflow.python import debug as tf_debug
 from layers import *
 from ops import *
@@ -572,182 +569,137 @@ class Trainer(object):
         summary_writer.add_summary(summary_img, step)
         summary_writer.flush()
 
-    # def test_eval(self, sess, output_path, flip_correction = True, save_result = False):
-    #     # confustion matrix!
-    #     # Note, this is a tricky part of tensorflow batch norm and no one knows
-    #     # why for sure. Recall that we have 130 frames for each volume. Deleting
-    #     # starting and end we have 128 slices which means we can devide them to
-    #     # 16 * 16 batches, and feed them seperately, self.net.batch_size = 16
+    def test_eval(self, sess, output_path, flip_correction = True, save_result = False):
+        """
+        Doing inference given test cases, in the format of .nii file
+        Args:
+            flip correction: use this to correct orientation mismatch between tfrecords and nii file
+        """
+        pred_folder = os.path.join(output_path, "test_pred")
+        try:
+            os.makedirs(pred_folder)
+        except:
+            logging.info("Cannot create prediction result folder")
 
-    #     all_cm = np.zeros([self.num_cls, self.num_cls])
-    #     pred_folder = os.path.join(output_path, "test_pred")
-    #     try:
-    #         os.makedirs(pred_folder)
-    #     except:
-    #         logging.info("prediction folder exists")
+        self.test_pair_list = list(zip(self.test_label_list, self.test_nii_list))
+        sample_eval_list = [] # evaluation of each sample
 
+        for idx_file, pair in enumerate(self.test_pair_list):
+            sample_cm = np.zeros([self.num_cls, self.num_cls]) # confusion matrix for each sample
+            label_fid = pair[0]
+            nii_fid = pair[1]
 
-    #     self.test_pair_list = list(zip(self.test_label_list, self.test_nii_list))
+            if not os.path.isfile(nii_fid):
+                raise Exception("cannot find sample %s"%str(nii_fid))
+            raw = nio.read_nii_image(nii_fid)
+            raw_y = nio.read_nii_image(label_fid)
 
-    #     sample_eval_list = [] # evaluation of each sample
+            nii_pred_bname = "dense_pred_" + os.path.basename(nii_fid)
 
-    #     for idx_file, pair in enumerate(self.test_pair_list):
-    #         sample_cm = np.zeros([self.num_cls, self.num_cls]) # confusion matrix for each sample
-    #         label_fid = pair[0]
-    #         nii_fid = pair[1]
-    #         if not os.path.isfile(nii_fid):
-    #             raise Exception("cannot find sample %s"%str(nii_fid))
-    #         raw = nio.read_nii_image(nii_fid)
-    #         raw_y = nio.read_nii_image(label_fid)
-    #         # pred_bname = "dense_pred_" + os.path.basename(fid)
-    #         # nii_pred_bname = "dense_pred_" + os.path.basename(nii_fid)
+            if flip_correction is True:
+                raw = np.flip(raw, axis = 0)
+                raw = np.flip(raw, axis = 1)
+                raw_y = np.flip(raw_y, axis = 0)
+                raw_y = np.flip(raw_y, axis = 1)
 
-    #         if flip_correction is True:
-    #             raw = np.flip(raw, axis = 0)
-    #             raw = np.flip(raw, axis = 1)
-    #             raw_y = np.flip(raw_y, axis = 0)
-    #             raw_y = np.flip(raw_y, axis = 1)
-    #         # viz.double_viewer(raw.T, raw_y.T)
+            tmp_y = np.zeros(raw_y.shape)
 
-    #         tmp_y = np.zeros(raw_y.shape)
+            for ii in range( int(floor( raw.shape[2] // self.net.batch_size  )  ) ):
+                vol = np.zeros( [self.net.batch_size, raw_size[0], raw_size[1], raw_size[2]]  )
+                slice_y = np.zeros( [self.net.batch_size, label_size[0], label_size[1]]  )
 
-    #         frame_list = [kk for kk in range(1, raw.shape[2]-1)]
-    #         np.random.shuffle(frame_list)
-    #         for ii in range( int(floor( raw.shape[2] // self.net.batch_size  )  )  ):
-    #             vol = np.zeros( [self.net.batch_size, raw_size[0], raw_size[1], raw_size[2]]  )
-    #             slice_y = np.zeros( [self.net.batch_size, label_size[0], label_size[1]]  )
-    #             for idx, jj in enumerate(frame_list[ii * self.net.batch_size : (ii + 1) * self.net.batch_size]):
-    #                 vol[idx,...] = raw[ ..., jj -1: jj+2  ].copy()
-    #                 slice_y[idx,...] = raw_y[..., jj ].copy()
-    #             vol_y = _label_decomp(self.num_cls, slice_y)
-    #             pred, curr_conf_mat= sess.run([self.net.compact_pred, self.net.confusion_matrix], \
-    #                                             feed_dict = {self.net.x: vol, self.net.y: vol_y, self.net.keep_prob: 1.0, \
-    #                                                          self.net.main_bn: False, self.net.adapt_bn: False})
+                for idx, jj in enumerate(range(ii * self.net.batch_size : (ii + 1) * self.net.batch_size)):
+                    vol[idx,...] = raw[ ..., jj -1: jj+2  ].copy()
+                    slice_y[idx,...] = raw_y[..., jj ].copy()
+                vol_y = _label_decomp(self.num_cls, slice_y)
+                pred, curr_conf_mat= sess.run([self.net.compact_pred, self.net.confusion_matrix], \
+                                                feed_dict = {self.net.x: vol, self.net.y: vol_y, self.net.keep_prob: 1.0, \
+                                                             self.net.main_bn: False, self.net.adapt_bn: False})
 
-    #             for idx, jj in enumerate(frame_list[ii * self.net.batch_size : (ii + 1) * self.net.batch_size]):
-    #                 tmp_y[..., jj] = pred[idx, ... ].copy()
-    #             logging.info(" part %s of %s of sample %s has been processed.."%(str(ii), str(floor(raw.shape[2] // self.net.batch_size)), str(idx_file)))
-    #             sample_cm += curr_conf_mat
+                for idx, jj in enumerate(range(ii * self.net.batch_size : (ii + 1) * self.net.batch_size)):
+                    tmp_y[..., jj] = pred[idx, ... ].copy()
+                logging.info(" part %s of %s of sample %s has been processed.."%(str(ii), str(floor(raw.shape[2] // self.net.batch_size)), str(idx_file)))
+                sample_cm += curr_conf_mat
 
+            sample_dice = _dice(sample_cm)
+            sample_jaccard = _jaccard(sample_cm)
+            sample_eval_list.append((sample_dice, sample_jaccard))
 
-    #         # if flip_correction is True:
-    #         #     tmp_y = np.flip(tmp_y, axis=0)
-    #         #     tmp_y = np.flip(tmp_y, axis=1)
-    #         all_cm += sample_cm
-    #         sample_dice = _dice(sample_cm)
-    #         sample_jaccard = _jaccard(sample_cm)
-    #         sample_eval_list.append((sample_dice, sample_jaccard))
+            if save_result is True:
+                _save_nii_prediction(raw_y, tmp_y, nii_fid, pred_folder, out_bname = nii_pred_bname) 
 
-    #         # self._save_npz_prediction(raw_y, tmp_y, pred_folder, out_bname="dense_pred_" + os.path.basename(fid))
-    #         if save_result is True:
-    #             _save_nii_prediction(raw_y, tmp_y, nii_fid, pred_folder, out_bname="dense_pred_" + os.path.basename(fid))
-    #         else:
-    #             print("result not saved since it's disabled.")
+        subject_dice_list, subject_jaccard_list = self.sample_metric_stddev(sample_eval_list)
+        return subject_dice_list, subject_jaccard_list
 
-    #         # viz.double_viewer(tmp_y.T, raw_y.T)
+    def sample_metric_stddev(self, sample_eval_list):
+        """
+        calculate stddev of each organ across samples
+        """
+        metric_mat = np.zeros( [len(sample_eval_list), self.num_cls, 2]  )
+        for organ, ind in list(contour_map.items()):
+            for ii in range(len(sample_eval_list)):
+                metric_mat[ii, int(ind), 0] = sample_eval_list[ii][0][int(ind)] # dice
+                metric_mat[ii, int(ind), 1] = sample_eval_list[ii][1][int(ind)] # jaccard
 
-    #     my_dice, my_jaccard = self._indicator_eval(all_cm)
-    #     eval_fid = os.path.join(output_path, "result.txt")
-    #     with open(eval_fid,'w') as fopen:
-    #         for organ, ind in list(contour_map.items()):
-    #             fopen.write( "organ: %s \n"%organ  )
-    #             fopen.write( "======================================= \n"  )
-    #             fopen.write( "dice: %s \n"%( my_dice[int(ind)]  )  )
-    #             fopen.write( "jaccard: %s \n"%( my_jaccard[int(ind)]  )  )
-    #             fopen.write( "Confusion matrix: "  )
-    #         fopen.close()
+        print("------- inside the sample_metric_stddev file ---- ")
+        for organ, ind in list(contour_map.items()):
+            print(( "organ: %s"%organ ))
+            print(( "dice_stddev: %s"%( np.std(metric_mat[:, int(ind), 0] ) ) ))
+            print(( "jaccard_stddev: %s"%( np.std(metric_mat[:, int(ind), 1] )  )  ))
 
-    #     subject_dice_list, subject_jaccard_list = self.sample_metric_stddev(sample_eval_list)
-    #     np.savetxt(os.path.join(output_path, "cm.csv"),all_cm)
-    #     return subject_dice_list, subject_jaccard_list
+        print("------- inside the sample_metric_stddev file ----  ")
+        for organ, ind in list(contour_map.items()):
+            print(( "organ: %s"%organ ))
+            print(( "dice_mean: %s"%( np.mean(metric_mat[:, int(ind), 0] ) ) ))
+            print(( "jaccard_mean %s"%( np.mean(metric_mat[:, int(ind), 1] )  )  ))
 
+        print("-------")
+        print(( "all_dice_mean: %s"%( np.mean(metric_mat[:, 1:, 0] ) ) ))
+        print(("all_jaccard_mean: %s" % (np.mean(metric_mat[:, 1:, 1] ) )))
 
-    # def sample_metric_stddev(self, sample_eval_list):
-    #     """
-    #     calculate stddev of each organ across samples
-    #     """
-    #     metric_mat = np.zeros( [len(sample_eval_list), self.num_cls, 2]  )
-    #     for organ, ind in list(contour_map.items()):
-    #         for ii in range(len(sample_eval_list)):
-    #             metric_mat[ii, int(ind), 0] = sample_eval_list[ii][0][int(ind)] # dice
-    #             metric_mat[ii, int(ind), 1] = sample_eval_list[ii][1][int(ind)] # jaccard
+        subject_level_list = np.mean(metric_mat, axis=0)
+        subject_level_list_dice = subject_level_list[:,0]
+        subject_level_list_jaccard = subject_level_list[:1]
 
-    #     print("------- inside the sample_metric_stddev file ---- ")
-    #     for organ, ind in list(contour_map.items()):
-    #         print(( "organ: %s"%organ ))
-    #         print(( "dice_stddev: %s"%( np.std(metric_mat[:, int(ind), 0] ) ) ))
-    #         print(( "jaccard_stddev: %s"%( np.std(metric_mat[:, int(ind), 1] )  )  ))
+        return subject_level_list_dice, subject_level_list_jaccard
 
-    #     print("------- inside the sample_metric_stddev file ----  ")
-    #     for organ, ind in list(contour_map.items()):
-    #         print(( "organ: %s"%organ ))
-    #         print(( "dice_mean: %s"%( np.mean(metric_mat[:, int(ind), 0] ) ) ))
-    #         print(( "jaccard_mean %s"%( np.mean(metric_mat[:, int(ind), 1] )  )  ))
+    def test_choose_model(self, this_model, output_path):
+        init_glb, init_loc = self._initialize(1, output_path, True)
 
-    #     print("-------")
-    #     print(( "all_dice_mean: %s"%( np.mean(metric_mat[:, 1:, 0] ) ) ))
-    #     print(("all_jaccard_mean: %s" % (np.mean(metric_mat[:, 1:, 1] ) )))
+        with tf.Session() as sess:
+            sess.run([init_glb, init_loc])
+            self.net.restore(sess, this_model)
+            logging.info("model has been loaded!")
+            dice, jac = self.test_eval(sess, output_path)
+            logging.info("testing finished")
+        return dice, jac
 
-    #     subject_level_list = np.mean(metric_mat, axis=0)
-    #     subject_level_list_dice = subject_level_list[:,0]
-    #     subject_level_list_jaccard = subject_level_list[:1]
-
-    #     return subject_level_list_dice, subject_level_list_jaccard
-
-
-    # def test_choose_model(self, this_model, output_path):
-
-    #     init_glb, init_loc = self._initialize(1, output_path, True)
-
-    #     with tf.Session() as sess:
-    #         sess.run([init_glb, init_loc])
-    #         self.net.restore(sess, this_model)
-    #         logging.info("model has been loaded!")
-    #         dice, jac = self.test_eval(sess, output_path)
-    #         logging.info("testing finished")
-
-    #     return dice, jac
-
-    # def _save_npz_prediction(self, gth, comp_pred, out_folder, out_bname, comp_flag = True):
-    #     """
-    #     save prediction to npz file
-    #     """
-    #     if comp_flag is True:
-    #         np.savez(os.path.join(out_folder, "compact_" + out_bname), comp_pred )
-    #     else:
-    #         decomp_pred = _label_decomp(self.num_cls, comp_pred)
-    #         for ii in range(1, decomp_pred.shape[-1]):
-    #             _lb_name = _inverse_lookup(contour_map, ii) + "_" +out_bname
-    #             np.savez( os.path.join(out_folder, _lb_name), decomp_pred[..., ii] )
-    #     np.savez( os.path.join(out_folder, "compact_gth_" + out_bname  ), gth)
-    #     logging.info(out_folder + "has been saved!")
-
-    # def _indicator_eval(self, cm, verbose = True):
-    #     """
-    #     Decompose confusion matrix and get statistics, for logging training procedure
-    #     """
-    #     my_dice = _dice(cm)
-    #     my_jaccard = _jaccard(cm)
-    #     print(cm)
-    #     for organ, ind in list(contour_map.items()):
-    #         print(("organ: %s "%organ))
-    #         print(("dice: %s " %(my_dice[int(ind)])))
-    #         print(("jaccard: %s " %(my_jaccard[int(ind)])))
-    #     return my_dice, my_jaccard
-
-    # def test(self, output_path, restored_path):
-    #     """
-    #     Launches the test process
-
-    #     :param output_path: path where to store checkpoints
-    #     :param restored_path: path where checkpoints are read from
-    #     """
-    #     init_glb, init_loc = self._initialize(1, output_path, True)
-
-    #     with tf.Session() as sess:
-    #         sess.run([ init_glb, init_loc] )
-    #         ckpt = tf.train.get_checkpoint_state(restored_path)
-    #         self.net.restore(sess, ckpt.model_checkpoint_path)
-    #         logging.info("model has been loaded!")
-    #         self.test_eval(sess, output_path)
-    #         logging.info("testing finished")
+#    def _indicator_eval(self, cm, verbose = True):
+#        """
+#        Decompose confusion matrix and get statistics, for logging training procedure
+#        """
+#        my_dice = _dice(cm)
+#        my_jaccard = _jaccard(cm)
+#        print(cm)
+#        for organ, ind in list(contour_map.items()):
+#            print(("organ: %s "%organ))
+#            print(("dice: %s " %(my_dice[int(ind)])))
+#            print(("jaccard: %s " %(my_jaccard[int(ind)])))
+#        return my_dice, my_jaccard
+#
+#    def test(self, output_path, restored_path):
+#        """
+#        Launches the test process
+#
+#        :param output_path: path where to store checkpoints
+#        :param restored_path: path where checkpoints are read from
+#        """
+#        init_glb, init_loc = self._initialize(1, output_path, True)
+#
+#        with tf.Session() as sess:
+#            sess.run([ init_glb, init_loc] )
+#            ckpt = tf.train.get_checkpoint_state(restored_path)
+#            self.net.restore(sess, ckpt.model_checkpoint_path)
+#            logging.info("model has been loaded!")
+#            self.test_eval(sess, output_path)
+#            logging.info("testing finished")
