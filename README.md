@@ -73,4 +73,4 @@ The experiment configurations can be found in `train_gan.py`.  It calls `adversa
 **Note: Repository still under construction ...**
 
 Questions on code, please email qi.dou@imperial.ac.uk (Qi Dou) and c.ouyang@imperial.ac.uk (Cheng Ouyang). <br />
-Questions on data or other general issues, please contact qi.dou@imperial.ac.uk (Qi Dou) and zxh@fudan.edu.cn (Xiahai Zhuang).
+Questions on data or general issues, please contact qi.dou@imperial.ac.uk (Qi Dou) and zxh@fudan.edu.cn (Xiahai Zhuang).
