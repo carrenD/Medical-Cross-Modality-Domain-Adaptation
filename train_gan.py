@@ -139,10 +139,6 @@ def main(phase):
                              opt_kwargs = opt_kwargs,\
                              train_config = train_config)
 
-    # start tensorboard
-    command = "tensorboard --logdir=" + output_path + " --port=1000"
-    os.system(command) # run tensorboard
-
     print("Now start training...")
     trainer.train(output_path = output_path,\
                   restored_path = restored_path,\

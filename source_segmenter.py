@@ -426,28 +426,6 @@ class Trainer(object):
 
         return init_glb, init_loc
 
-    # def _test_ppl(self):
-    #     """ test input pipeline!!!"""
-    #     with tf.Session() as sess:
-
-    #         init_glb = tf.global_variables_initializer()
-    #         init_loc = tf.local_variables_initializer()
-    #         sess.run([init_glb, init_loc])
-    #         coord = tf.train.Coordinator()
-    #         print("queue runner finished!")
-
-    #         feed_all = self.next_batch(self.train_queue)
-    #         print("start running session!")
-    #         threads = tf.train.start_queue_runners(sess = sess, coord = coord, start = True)
-    #         while True:
-    #             batch = feed_all.eval()
-    #             batch_x = batch[0,:,:,:,0]
-    #             batch_y = batch[0,:,:,:,1]
-
-    #         print("finished running session!")
-    #         coord.request_stop()
-    #         coord.join(threads)
-
     def train(self, output_path, restored_path=None, restore=False, training_iters=100, epochs=100, display_step=5, dropout=0.75):
 
         """
