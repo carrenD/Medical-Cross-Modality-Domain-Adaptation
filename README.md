@@ -6,7 +6,7 @@ Here are implementations for paper: <br />
 
 **PnP-AdaNet: Plug-and-Play Adversarial Domain Adaptation Network with a Benchmark at Cross-modality Cardiac Segmentation** (https://arxiv.org/abs/1812.07907)
  
- **Conference version: Unsupervised Cross-Modality Domain Adaptation of ConvNets for Biomedical Image Segmentations with Adversarial Loss, IJCAI, pp. 691-697, 2018.**
+ **Conference version: Unsupervised Cross-Modality Domain Adaptation of ConvNets for Biomedical Image Segmentations with Adversarial Loss, IJCAI, pp. 691-697, 2018.**(https://arxiv.org/abs/1804.10916)
 
 ![](assets/README-83d896ef.png)
 
