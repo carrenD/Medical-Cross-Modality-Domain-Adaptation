@@ -1,12 +1,14 @@
 # Medical image cross-modality domain adaptation
 
-**Note: This repository is still under construction ...**
+**Note: Repository still under construction ...**
 
-This is the code for the following paper:
+Here are implementations for paper: <br />
 
-**PnP-AdaNet: Plug-and-Play Adversarial Domain Adaptation Network with a Benchmark at Cross-modality Cardiac Segmentation** [arxiv link](https://arxiv.org/abs/1812.07907)
+**PnP-AdaNet: Plug-and-Play Adversarial Domain Adaptation Network with a Benchmark at Cross-modality Cardiac Segmentation** (https://arxiv.org/abs/1812.07907)
 
  By Qi Dou\*, Cheng Ouyang\*, Cheng Chen, Hao Chen, Ben Glocker, Xiahai Zhuang, Pheng-Ann Heng
+ 
+ **Conference version: Unsupervised Cross-Modality Domain Adaptation of ConvNets for Biomedical Image Segmentations with Adversarial Loss, IJCAI, pp. 691-697, 2018.**
 
 ![](assets/README-83d896ef.png)
 
