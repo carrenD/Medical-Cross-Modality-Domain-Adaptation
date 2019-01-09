@@ -1,12 +1,10 @@
-# Medical image cross-modality domain adaptation
-
-**Note: Repository still under construction ...**
+# Medical Cross-Modality Domain Adaptation (Med-CMDA)
 
 Here are implementations for paper: <br />
 
-**PnP-AdaNet: Plug-and-Play Adversarial Domain Adaptation Network with a Benchmark at Cross-modality Cardiac Segmentation** (https://arxiv.org/abs/1812.07907)
+**PnP-AdaNet: Plug-and-Play Adversarial Domain Adaptation Network with a Benchmark at Cross-modality Cardiac Segmentation** (https://arxiv.org/abs/1812.07907) (long version)
  
- **Conference version: Unsupervised Cross-Modality Domain Adaptation of ConvNets for Biomedical Image Segmentations with Adversarial Loss, IJCAI, pp. 691-697, 2018.**(https://arxiv.org/abs/1804.10916)
+**Unsupervised Cross-Modality Domain Adaptation of ConvNets for Biomedical Image Segmentations with Adversarial Loss, IJCAI, pp. 691-697, 2018.**(https://arxiv.org/abs/1804.10916) (short version)
 
 ![](assets/README-83d896ef.png)
 
@@ -71,6 +69,8 @@ The experiment configurations can be found in `train_gan.py`.  It calls `adversa
 #### 4. Evaluation
 
 \# TODO: combine the testing code with training code and switch them with an additional argument
+
+**Note: Repository still under construction ...**
 
 Any questions on implementations, please contact at qi.dou@imperial.ac.uk (Qi Dou) and c.ouyang@imperial.ac.uk (Cheng Ouyang) <br />
 Any questions on data or other general issues, please drop email to qi.dou@imperial.ac.uk (Qi Dou) and zxh@fudan.edu.cn (Xiahai Zhuang)
