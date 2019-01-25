@@ -1,4 +1,4 @@
-# Medical Cross-Modality Domain Adaptation (Med-CMDA)
+# Medical-Cross-Modality Domain Adaptation (Med-CMDA)
 
 Here are implementations for paper: <br />
 
