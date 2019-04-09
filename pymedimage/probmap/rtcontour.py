@@ -140,4 +140,5 @@ class RTContourLabel(rts.ROI):
             raise AttributeError("reference slice frame of refernce is not initialized")
         ct = super(RTContourLabel, self).makeDenseMask(self.reference_slice_FOR).array
         return self.normal * ct * 1.0 / np.max(ct)
-
+    
+    
