@@ -1,9 +1,9 @@
 import os
 import numpy as np
 import tensorflow as tf
-import pymedimage.visualize as viz
 import pymedimage.niftiio as nio
 
+#### Helpers for file IOs
 def _read_lists(fid):
     """
     Read all kinds of lists from text file to python lists
@@ -20,7 +20,61 @@ def _read_lists(fid):
         my_list.append(_item.split('\n')[0])
     return my_list
 
+def _save(sess, model_path, global_step):
+    """
+    Saves the current session to a checkpoint
+    """
+    saver = tf.train.Saver()
+    save_path = saver.save(sess, model_path, global_step = global_step)
+    return save_path
 
+def _save_nii_prediction(gth, comp_pred, ref_fid, out_folder, out_bname, debug = False):
+    """
+    save prediction, sample and gth to nii file given a reference
+    """
+    # first write prediction
+    ref_obj = read_nii_object(ref_fid)
+    if debug is True:
+        ref_vol = ref_obj.get_data()
+        viz.triple_viewer(comp_pred.T, gth.T, ref_vol.T)
+    ref_affine = ref_obj.get_affine()
+    out_bname = out_bname.split(".")[0] + ".nii.gz"
+    write_nii(comp_pred, out_bname, out_folder, affine = ref_affine)
+
+    # then write sample
+    _local_gth = gth.copy()
+    _local_gth[_local_gth > self.num_cls - 1] = 0
+    out_label_bname = "gth_" + out_bname
+    write_nii(_local_gth, out_label_bname, out_folder, affine = ref_affine)
+
+def write_nii(array_data, filename, path = "", affine = None):
+    """write np array into nii file"""
+    if affine is None:
+        print("No information about the global coordinate system")
+        affine = np.diag([1,1,1,1])
+    #pdb.set_trace()
+    #TODO: to check if it works
+   # array_data = np.int16(array_data)
+    array_img = nib.Nifti1Image(array_data, affine)
+    save_fid = os.path.join(path,filename)
+    try:
+        array_img.to_filename(save_fid)
+        print("Nii object %s has been saved!"%save_fid)
+    except:
+        raise Exception("file %s cannot be saved!"%save_fid)
+    return save_fid
+
+def read_nii_image(input_fid):
+    """read the nii image data into numpy array"""
+    img = nib.load(input_fid)
+    return img.get_data()
+
+def read_nii_object(input_fid):
+    """ directly read the nii object """
+    #pdb.set_trace()
+    return nib.load(input_fid)
+
+#### Helpers for evaluations
 def _label_decomp(num_cls, label_vol):
     """
     decompose label for softmax classifier
@@ -40,14 +94,6 @@ def _label_decomp(num_cls, label_vol):
         _vol = np.concatenate( (_vol, _n_slice[..., np.newaxis]), axis = 3 )
     return np.float32(_vol)
 
-
-def _save(sess, model_path, global_step):
-    """
-    Saves the current session to a checkpoint
-    """
-    saver = tf.train.Saver()
-    save_path = saver.save(sess, model_path, global_step = global_step)
-    return save_path
 
 
 def _dice_eval(compact_pred, labels, n_class):
@@ -73,42 +119,6 @@ def _inverse_lookup(my_dict, _value):
         if dic_value == _value:
             return key
     return None
-
-# def _save_npz_prediction(gth, temp, out_folder, out_bname, comp_flag = True):
-#     """
-#     save prediction to npz file
-#     """
-#     if comp_flag is True:
-#         np.savez(os.path.join(out_folder, "compact_" + out_bname), comp_pred )
-#     else:
-#         decomp_pred = self._label_decomp(comp_pred)
-#         for ii in range(1, decomp_pred.shape[-1]):
-#             _lb_name = _inverse_lookup(contour_map, ii) + "_" +out_bname
-#             np.savez( os.path.join(out_folder, _lb_name), decomp_pred[..., ii] )
-#     np.savez( os.path.join(out_folder, "compact_gth_" + out_bname  ), gth)
-#     logging.info(out_folder + "has been saved!")
-
-
-def _save_nii_prediction(gth, comp_pred, ref_fid, out_folder, out_bname, debug = False):
-    """
-    save prediction, sample and gth to nii file given a reference
-    """
-    # first write prediction
-    ref_obj = nio.read_nii_object(ref_fid)
-    if debug is True:
-        ref_vol = ref_obj.get_data()
-        viz.triple_viewer(comp_pred.T, gth.T, ref_vol.T)
-    ref_affine = ref_obj.get_affine()
-    out_bname = out_bname.split(".")[0] + ".nii.gz"
-    nio.write_nii(comp_pred, out_bname, out_folder, affine = ref_affine)
-    # logging.info("prediction nii file saved as %s \ %s"%(out_folder, out_bname))
-
-    # then write sample
-    _local_gth = gth.copy()
-    _local_gth[_local_gth > self.num_cls - 1] = 0
-    out_label_bname = "gth_" + out_bname
-    nio.write_nii(_local_gth, out_label_bname, out_folder, affine = ref_affine)
-    # logging.info("label nii file saved as %s \ %s"%(out_folder, out_label_bname))
 
 
 def _jaccard(conf_matrix):
@@ -156,7 +166,7 @@ def _indicator_eval(cm):
     "lv_blood": 3,
     "aa": 4
     }
-    
+
     dice = _dice(cm)
     jaccard = _jaccard(cm)
     print(cm)
@@ -166,3 +176,4 @@ def _indicator_eval(cm):
         print(( "jaccard: %s"%(jaccard[int(ind)] ) ))
 
     return dice, jaccard
+
