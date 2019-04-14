@@ -12,7 +12,7 @@ import matplotlib
 from tensorflow.python import debug as tf_debug
 from layers import *
 from ops import *
-from lib import _dice_eval, _save, _save_nii_prediction, _jaccard, _dice, _label_decomp, _indicator_eval
+from lib import _dice_eval, _save, _save_nii_prediction, _jaccard, _dice, _label_decomp, _indicator_eval, read_nii_image, read_nii_object
 
 
 np.random.seed(0)
@@ -306,7 +306,7 @@ class Trainer(object):
     :param net: the network instance to train
     :param train_list: image files for training
     :param val_list: image files for validation
-    :param test_nii_list: image files used at testing mode 
+    :param test_nii_list: image files used at testing mode
     """
 
     def __init__(self, net, train_list, val_list, num_cls, batch_size, test_nii_list = None, test_label_list = None, optimizer="momentum", \
@@ -381,7 +381,7 @@ class Trainer(object):
         return optimizer
 
     def _initialize(self, training_iters, output_path,  restore):
-        
+
         self.global_step = tf.Variable(0)
         scalar_summaries = []
         scalar_summaries.append(tf.summary.scalar('loss', self.net.cost))
@@ -591,8 +591,8 @@ class Trainer(object):
 
             if not os.path.isfile(nii_fid):
                 raise Exception("cannot find sample %s"%str(nii_fid))
-            raw = nio.read_nii_image(nii_fid)
-            raw_y = nio.read_nii_image(label_fid)
+            raw = read_nii_image(nii_fid)
+            raw_y = read_nii_image(label_fid)
 
             nii_pred_bname = "dense_pred_" + os.path.basename(nii_fid)
 
@@ -626,7 +626,7 @@ class Trainer(object):
             sample_eval_list.append((sample_dice, sample_jaccard))
 
             if save_result is True:
-                _save_nii_prediction(raw_y, tmp_y, nii_fid, pred_folder, out_bname = nii_pred_bname) 
+                _save_nii_prediction(raw_y, tmp_y, nii_fid, pred_folder, out_bname = nii_pred_bname)
 
         subject_dice_list, subject_jaccard_list = self.sample_metric_stddev(sample_eval_list)
         return subject_dice_list, subject_jaccard_list

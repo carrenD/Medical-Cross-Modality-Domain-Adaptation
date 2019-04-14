@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import tensorflow as tf
+import nibabel as nib
 
 #### Helpers for file IOs
 def _read_lists(fid):
@@ -33,9 +34,6 @@ def _save_nii_prediction(gth, comp_pred, ref_fid, out_folder, out_bname, debug =
     """
     # first write prediction
     ref_obj = read_nii_object(ref_fid)
-    if debug is True:
-        ref_vol = ref_obj.get_data()
-        viz.triple_viewer(comp_pred.T, gth.T, ref_vol.T)
     ref_affine = ref_obj.get_affine()
     out_bname = out_bname.split(".")[0] + ".nii.gz"
     write_nii(comp_pred, out_bname, out_folder, affine = ref_affine)
