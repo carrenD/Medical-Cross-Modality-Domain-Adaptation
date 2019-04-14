@@ -1,7 +1,6 @@
 import os
 import numpy as np
 import tensorflow as tf
-import pymedimage.niftiio as nio
 
 #### Helpers for file IOs
 def _read_lists(fid):
