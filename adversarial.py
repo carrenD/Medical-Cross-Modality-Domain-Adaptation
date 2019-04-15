@@ -10,12 +10,10 @@ import matplotlib
 import tensorflow as tf
 import csv
 
-import pymedimage.visualize as viz
-import pymedimage.niftiio as nio
 from tensorflow.python import debug as tf_debug
 from layers import *
 from ops import *
-from lib import _dice_eval, _save, _save_nii_prediction, _jaccard, _dice, _label_decomp, _indicator_eval
+from lib import _dice_eval, _save, _save_nii_prediction, _jaccard, _dice, _label_decomp, _indicator_eval, read_nii_image
 
 np.random.seed(0)
 contour_map = { # a map used for mapping label value to its name, used for output
@@ -48,7 +46,7 @@ class Full_DRN(object):
     def __init__(self, channels, n_class, batch_size, cost_kwargs={}, network_config = {}):
 
         ##### Done this function
-        
+
         tf.reset_default_graph()
 
         self.n_class = n_class # please note background is another class
@@ -119,7 +117,7 @@ class Full_DRN(object):
         with tf.variable_scope("mask_cls_scope", reuse = tf.AUTO_REUSE) as scope:
             self._ct_mask_logits = self.create_mask_critic(self.compact_pred)  # auxilary D loss for masks
             self._mr_mask_logits = self.create_mask_critic(self.compact_mr_valid)
-        
+
         self.cost_kwargs = cost_kwargs
         self.dis_loss, self.ct_gen_loss, self.fixed_coeff_reg, self.dis_reg, self.gen_reg = self._get_cost(_ct_logits, _mr_logits,  self._ct_class_logits, self._mr_class_logits,\
                                                 self._ct_mask_logits, self._mr_mask_logits, self.cost_kwargs) # get cost
@@ -269,7 +267,7 @@ class Full_DRN(object):
             self.ct_front_weights.append( wr6_2a  )
             self.ct_front_weights.append( wr6_3a  )
             self.ct_front_weights.append( wr6_4a  )
-        
+
         return block4_2, block4_2a, block6_2, block6_2a
 
     def create_second_half(self, input_feature, joint_bn, joint_trainable, num_cls, feature_base = 16,  input_channel = 3, keep_prob = 0.75):
@@ -320,7 +318,7 @@ class Full_DRN(object):
         return conv9_2, block8_2, block7_2, logits
 
     def create_classifier(self, input_conv4, input_conv6, input_b7, input_conv9, seg_logits, feature_base = 16, keep_prob = 0.75, cls_bn = True, cls_trainable = True):
-        """ 
+        """
         domain discriminator for MRI features and CT features
         """
         with tf.variable_scope('cls_0') as scope:
@@ -403,7 +401,7 @@ class Full_DRN(object):
         return cls_logits
 
     def create_mask_critic(self, input_mask, feature_base = 16, keep_prob = 0.75, m_cls_bn = True, m_cls_trainable = True):
-        """ 
+        """
         domain discriminator for MRI and CT segmentation maskS
 
         """
@@ -586,7 +584,7 @@ class Trainer(object):
                  test_label_list = None, test_nii_list = None,\
                  num_cls=None, batch_size = 6,\
                  opt_kwargs={}, train_config = {}):
-        
+
         self.net = net
         self.batch_size = batch_size
         self.num_cls = num_cls # including background
@@ -641,7 +639,7 @@ class Trainer(object):
         learning_rate = self.opt_kwargs.pop("learning_rate", None) # default set to 0.0002
         self.LR_refresh = learning_rate
         self.learning_rate_node = tf.Variable(learning_rate)
-        
+
 
         # optimizer for discriminator/ domain classifier
         dis_optimizer = tf.train.RMSPropOptimizer(learning_rate=self.learning_rate_node,
@@ -911,7 +909,7 @@ class Trainer(object):
                         self.output_minibatch_stats(sess, train_summary_writer, step, train_ct_batch, train_ct_batch_y, mr_batch, mr_batch_y)
 
                     if step % (display_step * 1) == 0:
-                        
+
                         # validation batch
                         ct_batch = sess.run(ct_feed_val)
                         ct_raw_y = ct_batch[:,:,:,3]
@@ -1014,8 +1012,8 @@ class Trainer(object):
             nii_fid = pair[1]
             if not os.path.isfile(nii_fid):
                 raise Exception("cannot find sample %s"%str(nii_fid))
-            raw = nio.read_nii_image(nii_fid)
-            raw_y = nio.read_nii_image(label_fid)
+            raw = read_nii_image(nii_fid)
+            raw_y = read_nii_image(label_fid)
 
             if flip_correction is True:
                 raw = np.flip(raw, axis = 0)

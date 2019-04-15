@@ -72,7 +72,7 @@ def main(phase):
     adapt_var_list = _read_lists("./lists/half_zip_ct_vars") # load a list of all variables for opened CT layers
     mr_var_list = _read_lists("./lists/half_zip_mri_vars") # load a list of all MRI variables corresponding to adapt_variable_list, These variables are used for initializing CT adaptation variables
     old_bn_list = _read_lists("./lists/old_bn_list") # load a list of batch normalization internal variables for source segmenter model
-    new_bn_list = _read_lists("./lists/pred_bn_list")  # load a list of batch normalization internal variables for current adaptation model. 
+    new_bn_list = _read_lists("./lists/pred_bn_list")  # load a list of batch normalization internal variables for current adaptation model.
 
     num_cls = 5 # number of classes, 0: background, 1: la_myo, 2: la_blood, 3: lv_blood, 4: aa
     batch_size = 6
@@ -85,9 +85,9 @@ def main(phase):
         network_config["ct_front_trainable"] = False
 
         train_config["restore_from_baseline"] = True
-        train_config["copy_main"] = True        
+        train_config["copy_main"] = True
         train_config["clear_rms"] = True
-        train_config["lr_update"] = True  
+        train_config["lr_update"] = True
         train_config["gen_interval"] = 0
         train_config["dis_sub_iter"] = 1
         train_config["dis_sub_iter_inc"] = 0
@@ -108,7 +108,7 @@ def main(phase):
         train_config["tag"] = train_config["tag"] + "-gan"
 
         cost_kwargs["lambda_mask_loss"] = rate
-       
+
     elif phase == 'fine-tune':  # continue to train the GAN from a breakpoint
 
         network_config["ct_front_trainable"] = True
