@@ -20,7 +20,7 @@ Deep convolutional networks have demonstrated the state-of-the-art performance o
 nibabel==2.1.0
 nilearn==0.3.1
 numpy==1.13.3
-tensorflow-gpu==1.4.0 (other versions not tested)
+tensorflow-gpu==1.4.0 (other tf versions not tested)
 python 2.7
 ```
 
