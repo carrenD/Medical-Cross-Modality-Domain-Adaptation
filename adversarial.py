@@ -98,7 +98,7 @@ class Full_DRN(object):
             self._ct_class_logits = self.create_classifier(_ct_c4_2, _ct_c6_2, _ct_b7, _ct_c9_2, _ct_logits)
             self._mr_class_logits = self.create_classifier(_mr_c4_2, _mr_c6_2, _mr_b7, _mr_c9_2, _mr_logits)
 
-        self.predicter = pixel_wise_softmax_2(_ct_logits) # segmentation logits of CT
+        self.predictor = pixel_wise_softmax_2(_ct_logits) # segmentation logits of CT
         self.compact_pred = tf.argmax(self.predicter, 3) # predictions
 
         self.compact_y = tf.argmax(self.ct_y, 3) # ground truth
@@ -115,8 +115,8 @@ class Full_DRN(object):
         self.mr_dice_eval, self.mr_dice_eval_arr = _dice_eval(self.compact_mr_valid, self.mr_y, self.n_class)
 
         with tf.variable_scope("mask_cls_scope", reuse = tf.AUTO_REUSE) as scope:
-            self._ct_mask_logits = self.create_mask_critic(self.compact_pred)  # auxilary D loss for masks
-            self._mr_mask_logits = self.create_mask_critic(self.compact_mr_valid)
+            self._ct_mask_logits = self.create_mask_critic(self.predictor, num_cls = n_class)  # auxilary D loss for masks
+            self._mr_mask_logits = self.create_mask_critic(self.mr_seg_valid, num_cls = n_class)
 
         self.cost_kwargs = cost_kwargs
         self.dis_loss, self.ct_gen_loss, self.fixed_coeff_reg, self.dis_reg, self.gen_reg = self._get_cost(_ct_logits, _mr_logits,  self._ct_class_logits, self._mr_class_logits,\
@@ -400,14 +400,13 @@ class Full_DRN(object):
 
         return cls_logits
 
-    def create_mask_critic(self, input_mask, feature_base = 16, keep_prob = 0.75, m_cls_bn = True, m_cls_trainable = True):
+    def create_mask_critic(self, input_mask, feature_base = 16, keep_prob = 0.75, num_cls = 5, m_cls_bn = True, m_cls_trainable = True):
         """
         domain discriminator for MRI and CT segmentation maskS
 
         """
-        input_mask = tf.expand_dims(tf.cast(input_mask, tf.float32), -1)
         with tf.variable_scope('mask_cls_1') as scope:
-            wr1_1m = sharable_weight_variable( shape = [3, 3, 1, feature_base], trainable = m_cls_trainable  , name = "Variable" )
+            wr1_1m = sharable_weight_variable( shape = [3, 3, num_cls, feature_base], trainable = m_cls_trainable  , name = "Variable" )
             out1m = conv_bn_relu2d( input_mask, wr1_1m, keep_prob, strides = [1,2,2,1], is_train = m_cls_bn, bn_trainable = m_cls_trainable, scope = 'mask_cls_1', leak = True  ) # use strided conv instead of maxpool to
             self.m_cls_weights.append( wr1_1m )
 
