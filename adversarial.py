@@ -115,8 +115,8 @@ class Full_DRN(object):
         self.mr_dice_eval, self.mr_dice_eval_arr = _dice_eval(self.compact_mr_valid, self.mr_y, self.n_class)
 
         with tf.variable_scope("mask_cls_scope", reuse = tf.AUTO_REUSE) as scope:
-            self._ct_mask_logits = self.create_mask_critic(self.predictor, num_cls = n_class)  # auxilary D loss for masks
-            self._mr_mask_logits = self.create_mask_critic(self.mr_seg_valid, num_cls = n_class)
+            self._ct_mask_logits = self.create_mask_critic(_ct_logits, num_cls = n_class)  # auxilary D loss for masks
+            self._mr_mask_logits = self.create_mask_critic(_mr_logits, num_cls = n_class)
 
         self.cost_kwargs = cost_kwargs
         self.dis_loss, self.ct_gen_loss, self.fixed_coeff_reg, self.dis_reg, self.gen_reg = self._get_cost(_ct_logits, _mr_logits,  self._ct_class_logits, self._mr_class_logits,\
