@@ -55,7 +55,7 @@ This calls `source_segmenter.py`, where network structure and training function 
 
 ##### 3.1 Warming-up the discriminator
 
-To obtain a good initial estimation of Wasserstein distances between feature maps of two domains, we first warm-up the feature domain discriminator. In order to do this, run
+To obtain a good initial estimation of Wasserstein distances between feature maps of two domains, we first pre-train the feature domain discriminator. In order to do this, run
 
 `python train_gan.py --phase warming-up`
 
