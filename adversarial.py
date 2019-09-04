@@ -328,7 +328,7 @@ class Full_DRN(object):
             flat_input_b7 = PS(input_b7, r=8, n_channel=8, batch_size=self.batch_size)  # 18 in total
             flat_input_conv9 = PS(input_conv9, r = 8, n_channel = 8, batch_size = self.batch_size) # 26 in total
 
-            input_comp = simple_concat2d(flat_input_conv4, flat_input_conv6) 10
+            input_comp = simple_concat2d(flat_input_conv4, flat_input_conv6) # 10
             input_comp = simple_concat2d(input_comp, flat_input_b7) # 18
             input_comp = simple_concat2d(input_comp, flat_input_conv9) # 26
             input_comp = simple_concat2d(input_comp, seg_logits) # 31 in total
