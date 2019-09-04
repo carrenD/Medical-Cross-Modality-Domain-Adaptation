@@ -10,12 +10,14 @@ import argparse
 import tensorflow as tf
 from tensorflow.python import debug as tf_debug
 import numpy as np
+import random
 
 import adversarial as drn
 from lib import _read_lists
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 
+random.seed(456)
 logging.basicConfig(filename = "general_log", level = logging.DEBUG)
 currtime = datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
 
