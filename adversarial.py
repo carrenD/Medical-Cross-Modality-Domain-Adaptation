@@ -323,16 +323,15 @@ class Full_DRN(object):
         """
         with tf.variable_scope('cls_0') as scope:
             flat_input_conv4 = PS(input_conv4, r=8, n_channel=2, batch_size=self.batch_size)  # 2
-            flat_input_conv6 = PS(input_conv6, r=8, n_channel=4, batch_size=self.batch_size)  # 4
-            flat_input_conv6 = tf.tile(flat_input_conv6, [1, 1, 1, 1]) # 6 in total
-            flat_input_b7 = PS(input_b7, r=8, n_channel=8, batch_size=self.batch_size)  # 14 in total
-            flat_input_conv9 = PS(input_conv9, r = 8, n_channel = 8, batch_size = self.batch_size) # 22 in total
+            flat_input_conv4 = tf.tile(flat_input_conv4, [1, 1, 1, 3]) # 6 in total
+            flat_input_conv6 = PS(input_conv6, r=8, n_channel=4, batch_size=self.batch_size)  # 10 in total
+            flat_input_b7 = PS(input_b7, r=8, n_channel=8, batch_size=self.batch_size)  # 18 in total
+            flat_input_conv9 = PS(input_conv9, r = 8, n_channel = 8, batch_size = self.batch_size) # 26 in total
 
-            input_comp = simple_concat2d(flat_input_conv4, flat_input_conv6) #6
-            input_comp = simple_concat2d(input_comp, flat_input_b7) # 14
-            input_comp = simple_concat2d(input_comp, flat_input_conv9) # 22
-            input_comp = simple_concat2d(input_comp, seg_logits) # 27 in total
-            input_comp = simple_concat2d(input_comp, seg_logits[:,:,:,1:]) # 31 in total
+            input_comp = simple_concat2d(flat_input_conv4, flat_input_conv6) 10
+            input_comp = simple_concat2d(input_comp, flat_input_b7) # 18
+            input_comp = simple_concat2d(input_comp, flat_input_conv9) # 26
+            input_comp = simple_concat2d(input_comp, seg_logits) # 31 in total
             input_comp = simple_concat2d(input_comp, tf.expand_dims(tf.cast(tf.argmax(seg_logits, 3), tf.float32), 3))  # 1
 
         with tf.variable_scope('cls_1') as scope:
