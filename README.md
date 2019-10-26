@@ -88,7 +88,7 @@ The experiment configurations can be found in `train_gan.py`.  It calls `adversa
 
 **Note: We are still actively updating the repo ...**
 
-#### Citation
+#### 5. Citation
 
 ```
 @inproceedings{dou2018unsupervised,
@@ -107,7 +107,7 @@ The experiment configurations can be found in `train_gan.py`.  It calls `adversa
 }
 ```
 
-#### Acknowledgement
+#### 6. Acknowledgement
 
 Special thanks to [Ryan Neph](https://github.com/ryanneph) for the [PyMedImage](https://github.com/ryanneph/PyMedImage) package, which is used for debugging in the original project.
 
