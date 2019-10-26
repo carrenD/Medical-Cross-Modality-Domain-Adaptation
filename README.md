@@ -21,8 +21,9 @@ In this project, we tackle an interesting problem setting of unsupervised domain
 nibabel==2.1.0
 nilearn==0.3.1
 numpy==1.13.3
-tensorflow-gpu==1.4.0 (other tf versions not tested)
+tensorflow-gpu==1.4.0 
 python 2.7
+(Note: other tf versions not tested, and please notify us if it also works :0)
 ```
 
 #### 1. Data preprocessing
