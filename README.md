@@ -34,13 +34,13 @@ The original data of cardiac 20 CT and 20 MR images come from
 
 The pre-processed and augmented data repository can be downloaded [here](https://drive.google.com/file/d/1m9NSHirHx30S8jvN0kB-vkd7LL0oWCq3/view?usp=sharing), in the form of tfrecord for direct load. <br>
 
+Briefly, the images are cropped centering at the heart region, with four cardiac substructures selected for segmentation considering mutual visibility in 2D view. <br>
+
 To adapt a segmenter from MR to CT, use: <br>
 ct_train_tfs: training slices from 14 cases, 600 slices each, 8400 slices in total. <br>
 ct_val_tfs: validation slices from 2 cases, 600 slices each. 1200 slices in total. <br>
 mr_train_tfs: training slices from 16 cases, 600 slices each, 9600 slices in total. <br>
 mr_val:tfs: validation slices from 4 cases, 2400 slices in total. Since we are doing MR to CT, we don't need a real MR testing set. <br>
-
-Briefly, the images are cropped centering at the heart region, with four cardiac substructures selected for segmentation considering mutual visibility in 2D view. <br>
 
 For the ease of training, after data augmentation, training samples are expected to be written into `tfrecord` with the following format:
 ```python
@@ -87,10 +87,6 @@ The experiment configurations can be found in `train_gan.py`.  It calls `adversa
 
 **Note: We are still actively updating the repo ...**
 
-We make the released code as easy to read and friendly to modify.
-Questions on code, please email qi.dou@imperial.ac.uk (Qi Dou) and c.ouyang@imperial.ac.uk (Cheng Ouyang). <br />
-Other questions, please contact qi.dou@imperial.ac.uk (Qi Dou) and zxh@fudan.edu.cn (Xiahai Zhuang).
-
 #### Citation
 
 ```
@@ -102,7 +98,6 @@ Other questions, please contact qi.dou@imperial.ac.uk (Qi Dou) and zxh@fudan.edu
   year={2018}
 }
 
-
 @article{dou2018pnp,
   title={PnP-AdaNet: Plug-and-play adversarial domain adaptation network with a benchmark at cross-modality cardiac segmentation},
   author={Dou, Qi and Ouyang, Cheng and Chen, Cheng and Chen, Hao and Glocker, Ben and Zhuang, Xiahai and Heng, Pheng-Ann},
@@ -111,8 +106,12 @@ Other questions, please contact qi.dou@imperial.ac.uk (Qi Dou) and zxh@fudan.edu
 }
 ```
 
-
-
 #### Acknowledgement
 
 Special thanks to [Ryan Neph](https://github.com/ryanneph) for the [PyMedImage](https://github.com/ryanneph/PyMedImage) package, which is used for debugging in the original project.
+
+#### Contact
+
+General questions, please email qi.dou@imperial.ac.uk (Qi Dou) and c.ouyang@imperial.ac.uk (Cheng Ouyang). <br />
+Questions on data license, please contact qi.dou@imperial.ac.uk (Qi Dou) and zxh@fudan.edu.cn (Xiahai Zhuang).
+
