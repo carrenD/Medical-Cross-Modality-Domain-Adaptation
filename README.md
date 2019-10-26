@@ -15,7 +15,7 @@ In this project, we tackle an interesting problem setting of unsupervised domain
 
 ### Usage
 
-#### 0. Requirements
+#### 0. Packages
 
 ```
 nibabel==2.1.0
