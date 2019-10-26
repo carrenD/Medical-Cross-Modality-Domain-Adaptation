@@ -111,7 +111,7 @@ The experiment configurations can be found in `train_gan.py`.  It calls `adversa
 
 Special thanks to [Ryan Neph](https://github.com/ryanneph) for the [PyMedImage](https://github.com/ryanneph/PyMedImage) package, which is used for debugging in the original project.
 
-#### Contact
+### Contact
 
 General questions, please email qi.dou@imperial.ac.uk (Qi Dou) and c.ouyang@imperial.ac.uk (Cheng Ouyang). <br />
 Questions on data license, please contact qi.dou@imperial.ac.uk (Qi Dou) and zxh@fudan.edu.cn (Xiahai Zhuang).
