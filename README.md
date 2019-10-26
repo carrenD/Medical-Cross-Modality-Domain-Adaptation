@@ -10,9 +10,8 @@ Here are implementations for paper: <br />
 
 ### Introduction
 
-Deep convolutional networks have demonstrated the state-of-the-art performance on various medical image computing tasks. Leveraging images from different modalities for the same analysis task holds clinical benefits. However, the generalization capability of deep models on test data with different distributions remain as a major challenge. 
-In this project, we propose a plug-and-play adversarial domain adaptation network for adapting segmentation networks between different modalities of medical images, e.g., MRI and CT. 
-The idea is to tackle the significant domain shift by aligning the feature spaces of source and target domains in an unsupervised manner.
+Deep convolutional networks have demonstrated the state-of-the-art performance on various medical image computing tasks. However, the generalization capability of deep models on test data with different distributions remain as a major challenge. 
+In this project, we tackle an interesting problem setting of unsupervised domain adaptation between CT and MRI, by proposing a plug-and-play adversarial domain adaptation network to align feature spaces of both domains presenting significant domain shift.
 
 ### Usage
 
