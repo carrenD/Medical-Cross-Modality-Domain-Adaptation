@@ -23,6 +23,7 @@ nilearn==0.3.1
 numpy==1.13.3
 tensorflow-gpu==1.4.0 
 python 2.7
+
 (Note: other tf versions not tested, and please notify us if it also works :0)
 ```
 
