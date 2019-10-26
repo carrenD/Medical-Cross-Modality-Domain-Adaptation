@@ -26,7 +26,14 @@ python 2.7
 
 #### 1. Data preprocessing
 
-The data repository is under construction.
+The original data of cardiac CT and MR images come from MMWHS challenge. Four substructures are selected for mutual visibility in 2D view. <br>
+
+The pre-processed and augmented data repository, for adapting a segmenter from MR to CT, is released here in the form of tfrecord for direct load. <br>
+
+ct_train_tfs: training slices from 14 cases, 600 slices each, 8400 slices in total. <br>
+ct_val_tfs: validation slices from 2 cases, 600 slices each. 1200 slices in total. <br>
+mr_train_tfs: training slices from 16 cases, 600 slices each, 9600 slices in total. <br>
+mr_val:tfs: validation slices from 4 cases, 2400 slices in total. Since we are doing MR to CT, we don't need a real MR testing set. <br>
 
 For the ease of training, after data augmentation, training samples are expected to be written into `tfrecord` with the following format:
 ```python
