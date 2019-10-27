@@ -33,7 +33,7 @@ The original data of cardiac 20 CT and 20 MR images come from
  [MMWHS Challenge](http://www.sdspeople.fudan.edu.cn/zhuangxiahai/0/mmwhs/), with the original data release license also applies to this project. <br>
 
 The pre-processed and augmented data repository can be downloaded [here](https://drive.google.com/file/d/1m9NSHirHx30S8jvN0kB-vkd7LL0oWCq3/view?usp=sharing), in the form of tfrecord for direct load. <br>
-The same data is also used for our [SIFA]() paper.
+The same data is also used for our [SIFA](https://github.com/carrenD/SIFA) paper.
 
 Briefly, the images are cropped centering at the heart region, with four cardiac substructures selected for segmentation considering mutual visibility in 2D view. <br>
 
