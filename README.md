@@ -114,7 +114,7 @@ or
 
 #### 6. Acknowledgements
 
-Special thanks to [Ryan Neph](https://github.com/ryanneph) for the [PyMedImage](https://github.com/ryanneph/PyMedImage) package, which is used for debugging in the original project.
+Special thanks to [Ryan Neph](https://github.com/ryanneph) for the [PyMedImage](https://github.com/ryanneph/PyMedImage) package, which was used for debugging in the original project.
 
 ### Contact
 
