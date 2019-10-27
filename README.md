@@ -87,7 +87,7 @@ The experiment configurations can be found in `train_gan.py`.  It calls `adversa
 
 \# TODO: combine the testing code with training code and switch them with an additional argument
 
-**Note: We are still actively updating the repo ...**
+Note: We are still actively updating the repo ...
 
 #### 5. Citations
 
