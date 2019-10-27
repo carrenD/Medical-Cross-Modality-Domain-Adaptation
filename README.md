@@ -91,7 +91,7 @@ Note: We are still actively updating the repo ...
 
 #### 5. Citations
 
-If you make use of the code, please cite the paper in any resulting publications.
+If you make use of the code, please cite the paper in resulting publications.
 
 ```
 @inproceedings{dou2018unsupervised,
