@@ -41,7 +41,7 @@ ct_train_tfs: training slices from 14 cases, 600 slices each, 8400 slices in tot
 ct_val_tfs: validation slices from 2 cases, 600 slices each. 1200 slices in total. <br>
 mr_train_tfs: training slices from 16 cases, 600 slices each, 9600 slices in total. <br>
 mr_val:tfs: validation slices from 4 cases, 600 slices each, 2400 slices in total. <br>
-_Since we are doing MR to CT, we don't need a real MR testing set_ <br>
+_Since we are doing MR to CT adaptation, we don't need a real MR testing set_ <br>
 
 For the ease of training, after data augmentation, training samples are expected to be written into `tfrecord` with the following format:
 ```python
@@ -89,6 +89,8 @@ The experiment configurations can be found in `train_gan.py`.  It calls `adversa
 **Note: We are still actively updating the repo ...**
 
 #### 5. Citations
+
+If you make use of the code, please cite the paper in any resulting publications.
 
 ```
 @inproceedings{dou2018unsupervised,
