@@ -101,6 +101,8 @@ If you make use of the code, please cite the paper in any resulting publications
   year={2018}
 }
 
+or
+
 @article{dou2018pnp,
   title={PnP-AdaNet: Plug-and-play adversarial domain adaptation network with a benchmark at cross-modality cardiac segmentation},
   author={Dou, Qi and Ouyang, Cheng and Chen, Cheng and Chen, Hao and Glocker, Ben and Zhuang, Xiahai and Heng, Pheng-Ann},
