@@ -73,7 +73,7 @@ This calls `source_segmenter.py`, where network structure and training function 
 
 To obtain a good initial estimation of Wasserstein distances between feature maps of two domains, we first pre-train the feature domain discriminator. In order to do this, run
 
-`python train_gan.py --phase warming-up`
+`python train_gan.py --phase pre-train`
 
 #### 3.2 Training adversarial domain adaptation
 
