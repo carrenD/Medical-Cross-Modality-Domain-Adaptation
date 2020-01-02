@@ -32,7 +32,7 @@ python 2.7
 The original data of cardiac 20 CT and 20 MR images come from 
  [MMWHS Challenge](http://www.sdspeople.fudan.edu.cn/zhuangxiahai/0/mmwhs/), with the original data release license also applies to this project. <br>
 
-The pre-processed and augmented data repository can be downloaded [here](https://drive.google.com/file/d/1m9NSHirHx30S8jvN0kB-vkd7LL0oWCq3/view?usp=sharing), in the form of tfrecord for direct load. <br>
+The pre-processed and augmented training data repository can be downloaded [here](https://drive.google.com/file/d/1m9NSHirHx30S8jvN0kB-vkd7LL0oWCq3/view?usp=sharing), in the form of tfrecord for direct load. The testing CT data are [here](https://drive.google.com/file/d/1SJM3RluT0wbR9ud_kZtZvCY0dR9tGq5V/view?usp=sharing), in the form of .nii with heart region cropped. <br>
 The same data is also used for our [SIFA](https://github.com/carrenD/SIFA) paper.
 
 Briefly, the images are cropped centering at the heart region, with four cardiac substructures selected for segmentation considering mutual visibility in 2D view. <br>
