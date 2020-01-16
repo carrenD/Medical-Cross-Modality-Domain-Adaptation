@@ -35,7 +35,7 @@ The original data of cardiac 20 CT and 20 MR images come from
 The pre-processed and augmented training data repository can be downloaded [here](https://drive.google.com/file/d/1m9NSHirHx30S8jvN0kB-vkd7LL0oWCq3/view?usp=sharing), in the form of tfrecord for direct load. The testing CT data can be downloaded [here](https://drive.google.com/file/d/1SJM3RluT0wbR9ud_kZtZvCY0dR9tGq5V/view?usp=sharing), in the form of .nii with heart region cropped. <br>
 The same data is also used for our [SIFA](https://github.com/carrenD/SIFA) paper.
 
-Briefly, the images were 1. cropped centering at the heart region, with four cardiac substructures selected for segmentation considering mutual visibility in 2D view; 2. for each 3D cropped image top 2/% of its intensity histogram is cut off for alleviating artifacts; 3. each 3D image was then normalized to zero-mean, unit standard diviation; 4. 2D coronal slices were sampled with data augmentation. <br>
+Briefly, the images were 1. cropped centering at the heart region, with four cardiac substructures selected for segmentation considering mutual visibility in 2D view; 2. for each 3D cropped image top 2/% of its intensity histogram was cut off for alleviating artifacts; 3. each 3D image was then normalized to zero-mean, unit standard diviation; 4. 2D coronal slices were sampled with data augmentation. <br>
 
 To adapt a segmenter from MR to CT, use: <br>
 ct_train_tfs: training slices from 14 cases, 600 slices each, 8400 slices in total. <br>
