@@ -33,7 +33,7 @@ The original data of cardiac 20 CT and 20 MR images come from
  [MMWHS Challenge](http://www.sdspeople.fudan.edu.cn/zhuangxiahai/0/mmwhs/), with the original data release license also applies to this project. <br>
 
 The pre-processed and augmented training data repository can be downloaded [here](https://drive.google.com/file/d/1m9NSHirHx30S8jvN0kB-vkd7LL0oWCq3/view?usp=sharing), in the form of tfrecord for direct load. The testing CT data can be downloaded [here](https://drive.google.com/file/d/1SJM3RluT0wbR9ud_kZtZvCY0dR9tGq5V/view?usp=sharing), in the form of .nii with heart region cropped. <br>
-The same data is also used for our [SIFA](https://github.com/carrenD/SIFA) paper.
+The same data is also used for our [SIFA](https://github.com/cchen-cc/SIFA) paper.
 
 Briefly, the images were 1. cropped centering at the heart region, with four cardiac substructures selected for segmentation considering mutual visibility in 2D view; 2. for each 3D cropped image top 2/% of its intensity histogram was cut off for alleviating artifacts; 3. each 3D image was then normalized to zero-mean, unit standard diviation; 4. 2D coronal slices were sampled with data augmentation. <br>
 
@@ -85,9 +85,7 @@ The experiment configurations can be found in `train_gan.py`.  It calls `adversa
 
 #### 4. Evaluation
 
-\# TODO: combine the testing code with training code and switch them with an additional argument
-
-Note: We are still actively updating the repo ...
+The evaluation code has been released with our SIFA repo, please refer to [here](https://github.com/cchen-cc/SIFA/blob/master/evaluate.py) 
 
 #### 5. Citations
 
