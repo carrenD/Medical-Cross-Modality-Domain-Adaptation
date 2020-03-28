@@ -25,7 +25,8 @@ tensorflow-gpu==1.4.0
 python 2.7
 
 (Note: other tf versions not tested, and please notify us if it also works :0)
-Our user friendly confirmed that TensorFlow 1.6 with CUDA 10.0 also works.
+
+-Updated on Mar 2020: Our user friendly confirmed that TensorFlow 1.6 with CUDA 10.0 also works.
 ```
 
 #### 1. Data preprocessing
